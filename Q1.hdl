@@ -1,0 +1,32 @@
+CHIP cw2 
+{
+   IN indata[8], enable, load;
+   OUT sout, complete;
+   PARTS:
+
+   Bit(load = load, x = indata[0], out = outindata1);
+   Bit(load = load, x = indata[1], out = outindata2);
+   Bit(load = load, x = indata[2], out = outindata3);
+   Bit(load = load, x = indata[3], out = outindata4);
+   Bit(load = load, x = indata[4], out = outindata5);
+   Bit(load = load, x = indata[5], out = outindata6);
+   Bit(load = load, x = indata[6], out = outindata7);
+   Bit(load = load, x = indata[7], out = outindata8);
+
+   Mux(x = false, y = outindata8, sel = selectioninput, out = Muxx); DFF(x = Muxx, out = dff1);
+   Mux(x = dff1, y = outindata7, sel = selectioninput, out = Muxx1); DFF(x = Muxx1, out = dff2);
+   Mux(x = dff2, y = outindata6, sel = selectioninput, out = Muxx2); DFF(x = Muxx2, out = dff3);
+   Mux(x = dff3, y = outindata5, sel = selectioninput, out = Muxx3); DFF(x = Muxx3, out = dff4);
+   Mux(x = dff4, y = outindata4, sel = selectioninput, out = Muxx4); DFF(x = Muxx4, out = dff5);
+   Mux(x = dff5, y = outindata3, sel = selectioninput, out = Muxx5); DFF(x = Muxx5, out = dff6);
+   Mux(x = dff6, y = outindata2, sel = selectioninput, out = Muxx6); DFF(x = Muxx6, out = dff7);
+   Mux(x = dff7, y = outindata1, sel = selectioninput, out = Muxx7); DFF(x = Muxx7, out = dff8, out = sout);
+
+   Or8Way( x[0] = orec0, x[1] = orec1, x[2] = orec2, x[3] = orec3, x[4] = orec4, x[5] = orec5, x[6] = orec6,x[7] = orec7,out = orecnot);
+   Not(x = orecnot, out= orec); And(x = enable, y= orec, out = selectioninput);
+
+   DFF(x = selectioninput, out = orec0); DFF(x = orec0, out = orec1);
+   DFF(x = orec1, out = orec2); DFF(x = orec2, out = orec3);
+   DFF(x = orec3, out = orec4); DFF(x = orec4, out = orec5);
+   DFF(x = orec5, out = orec6); DFF(x = orec6, out = complete, out = orec7);
+}
